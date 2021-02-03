@@ -1,5 +1,5 @@
-#ifndef COMPILETIME_SIZED_ARRAY
-#define COMPILETIME_SIZED_ARRAY
+/* This work is licensed under a Creative Commons CCZero 1.0 Universal License.
+ * See http://creativecommons.org/publicdomain/zero/1.0/ for more information. */
 
 #include <span>
 #include <iostream>
@@ -64,14 +64,6 @@ public:
             --last;
         }
     }
-    friend std::ostream& operator<<(std::ostream& os, const compiletime_sized_array& array)
-    {
-        for (const auto& i : array)
-        {
-            os << i << " ";
-        }
-        return os;
-    }
 private:
     value_type data[N];
     span_type data_range;
@@ -80,9 +72,23 @@ private:
 
 int main()
 {
-    compiletime_sized_array<int, 5> a;
-    a.emplace_back(10, 10, 3, 2, 19, 44);
-    std::cout << a << "\n";
-}
+    {
+        compiletime_sized_array<int, 4> numbers;
+        numbers.emplace_back(10, 10, 3, 2, 19, 44); // 10, 10, 3, 2
+        numbers.pop_back();                         // 10, 10, 3
+        numbers.emplace_back(5);                    // 10, 10, 3, 5
+        std::cout << "numbers:\n";
+        for (const auto& number : numbers) { std::cout << number << " "; }
+        std::cout << "\n";
+    }
+    {
+        compiletime_sized_array<std::pair<const char*, int>, 100> log;
+        log.emplace_back(std::make_pair("log msg1", 155));
+        log.emplace_back(std::make_pair("log msg2", 156));
+        log.emplace_back(std::make_pair("log msg3", 157));
+        log.emplace_back(std::make_pair("log msg4", 158));
 
-#endif /* COMPILETIME_SIZED_ARRAY */
+        std::cout << "\nlogfile contains:\n";
+        for (const auto& l : log) { std::cout << l.first << ", " << l.second << "\n"; }
+    }
+}
